@@ -106,10 +106,10 @@ bool PesquisaItem(TipoLista *lista, char nome[])
     return false;
 }
 
-Apontador PesquisaItemPorId(TipoLista *lista, int id)
+Apontador PesquisaItemPorId(TipoLista lista, int id)
 {
     Apontador aux;
-    aux = lista->primeiro->prox;
+    aux = lista.primeiro->prox;
     while (aux != NULL)
     {
         if (aux->item.id == id)
@@ -147,7 +147,7 @@ void ImprimeItem(TipoLista *lista, int id)
 
 void BusqueFunc(TipoLista lista)
 {
-    int id, recebe;
+    int id, recebe = 0;
     Apontador ap;
 
     cout << "--------------------------------\n";
@@ -158,7 +158,7 @@ void BusqueFunc(TipoLista lista)
     int funcID;
     cout << "Informe o codigo do funcionario que desejas procurar: ";
     cin >> funcID;
-    recebe = VerificaFunc(funcID, lista, &ap);
+    recebe = VerificaFunc(funcID, &lista, &ap);
 
     if (recebe == 1)
     {
@@ -169,10 +169,12 @@ void BusqueFunc(TipoLista lista)
         cout << "Bairro: " << ap->prox->item.endereco.bairro << endl;
         cout << "Rua: " << ap->prox->item.endereco.rua << endl;
         cout << "Numero: " << ap->prox->item.endereco.numero << endl;
-        cout << "Dependentes: " << ap->prox->item.dependentes << endl;
+        cout << "Dependentes: " << ap->prox->item.dependentes << endl << endl;
 
-        ImprimeProjectos(ap->prox->item.projeto);
-
+        if(ap->prox->item.projeto.tamanho != 0){
+            ImprimeProjectos(ap->prox->item.projeto);
+        }else
+            cout << "Funcionario não possui projeto!" << endl;
         system("pause");
     }
     else
@@ -182,7 +184,23 @@ void BusqueFunc(TipoLista lista)
     }
 }
 
-void InserirProjetos(Projeto *pro, TipoProjeto *lista)
+int BusqueProjetos(int id, TipoProjeto projeto, int *a){
+    int p = projeto.primeiro;
+    int encontrou = 0;
+
+    while ((!encontrou) && (p < projeto.ultimo))
+    {
+        if (projeto.projeto[p].id == id){
+            encontrou = 1;
+        } else {
+            p++;
+        }
+        *a = p;
+    }
+    return encontrou;
+}
+
+void InserirProjetos(Projeto pro, TipoProjeto *lista)
 {
     if (lista->ultimo == MAX_TAM)
     {
@@ -202,9 +220,9 @@ void ImprimeProjectos(TipoProjeto lista)
     cout << "Projeto(s)" << endl;
     for (int i = 0; i < lista.ultimo; i++)
     {
-        cout << "ID projeto: " << lista.projeto[i]->id << endl;
-        cout << "Nome Projeto: " << lista.projeto[i]->nome << endl;
-        cout << "Horas Trabalhadas: " << lista.projeto[i]->horasTrabalhadasSemanais << endl;
+        cout << "ID projeto: " << lista.projeto[i].id << endl;
+        cout << "Nome Projeto: " << lista.projeto[i].nome << endl;
+        cout << "Horas Trabalhadas: " << lista.projeto[i].horasTrabalhadasSemanais << endl;
     }
 }
 
@@ -233,22 +251,28 @@ void ImprimeItemPorId(TipoLista *lista, int id)
     }
 }
 
-void ImprimeProjetoPorId(TipoLista *lista, TipoProjeto projeto, int id)
+void ImprimeProjetoPorId(TipoLista *lista, TipoProjeto *projeto, int id)
 {
     Apontador aux;
     aux = lista->primeiro->prox;
     while (aux != NULL)
     {
-        if (aux->item.id == id)
+        if (aux->item.projeto.projeto->id == id)
         {
             cout << "Projeto" << endl;
-            cout << "ID: " << projeto.projeto[id]->id << endl;
-            cout << "Nome: " << projeto.projeto[id]->nome << endl;
-            cout << "Horas trabalhadas, semana: " << projeto.projeto[id]->horasTrabalhadasSemanais << endl;
+            cout << "ID: " << aux->item.projeto.projeto[id].id << endl;
+            cout << "Nome: " << aux->item.projeto.projeto[id].nome << endl;
+            cout << "Horas trabalhadas, semana: " << aux->item.projeto.projeto[id].horasTrabalhadasSemanais << endl;
             break;
         }
         aux = aux->prox;
     }
+}
+
+void imprimeProjeto(Projeto projeto){
+        cout << projeto.id<< endl;
+        cout << projeto.nome << endl;
+        cout << projeto.horasTrabalhadasSemanais<< endl;
 }
 
 void RemoveListaPrimeiro(TipoLista *lista)
@@ -288,59 +312,60 @@ void RemoveItemPorId(TipoLista *lista, int id)
     if (VerificaListaVazia(lista))
     {
         return;
-    }
+    }else{
+        Apontador aux, anterior, x;
 
-    Apontador aux, anterior, x;
+        cout << "removeFunc"<< endl;
 
-    aux = lista->primeiro->prox;
+        aux = lista->primeiro->prox;
 
-    x = lista->primeiro;
+        x = lista->primeiro;
 
-    while (x != NULL)
-    {
-        if (x->prox->item.id == id)
+        while (x != NULL)
         {
-            anterior = x;
-            break;
+            if (x->prox->item.id == id)
+            {
+                anterior = x;
+                break;
+            }
+            x = x->prox;
         }
-        x = x->prox;
+        aux = anterior->prox;
+        anterior->prox = aux->prox;
+        delete aux;
+        lista->tamanho--;
     }
-    aux = anterior->prox;
-    anterior->prox = aux->prox;
-    delete aux;
-    lista->tamanho--;
 }
 
-void RemoveProjectPorId(TipoProjeto *lista, int p, Projeto *proj)
+void RemoveProjectPorId(TipoProjeto *lista, int p, Projeto *proj, Apontador ap)
 {
-    int a, aux;
-    Apontador ap;
+    int indice;
 
-    cout << "Informe o codigo do projeto: ";
-    cin >> id;
+    indice = pesquisaCodProjeto(&ap->prox->item.projeto, p);
+    cout << "remove" << endl;
 
-    if (VerificaProj(id, ap->item.projeto, &a))
-    {
-        proj = lista->projeto[p];
-        lista->ultimo--;
-        for (int i = 3; i < 5; i++)
-        {
-            lista->projeto[i] = lista->projeto[i + 1];
+    if(indice >= 0){
+        cout << "remove dentro" << endl;
+        *proj = lista->projeto[indice];
+        for(int i = indice; i < lista->ultimo; i++){
+            lista->projeto[i] = lista->projeto[i+1];
         }
+        lista->tamanho--;
+        lista->ultimo--;
     }
 }
 
-int VerificaFunc(int id, TipoLista lista, Apontador *ap)
+int VerificaFunc(int id, TipoLista *lista, Apontador *ap)
 {
     Apontador aux;
-    aux = lista.primeiro;
+    aux = lista->primeiro;
     int encontrou = 0;
 
     while ((!encontrou) && (aux->prox != NULL))
     {
         if (aux->prox->item.id == id)
         {
-            encontrou = 1;
+            encontrou = id;
         }
         else
             aux = aux->prox;
@@ -349,23 +374,24 @@ int VerificaFunc(int id, TipoLista lista, Apontador *ap)
     return encontrou;
 }
 
-int VerificaProj(int id, TipoProjeto lista, int *a)
+int VerificaProj(int id, TipoProjeto *lista)
 {
-    int x = lista.primeiro;
-    int encontrou = 0;
-
-    while ((!encontrou) && (x < lista.ultimo))
-    {
-        if (lista.projeto[x]->id == id)
+    for(int i = 0; i < lista->ultimo; i++){
+        if (lista->projeto[i].id == id)
         {
-            encontrou = 1;
-        }
-        else
-        {
-            x++;
+            return i;
         }
     }
-    return encontrou;
+    return -1;
+}
+
+int pesquisaCodProjeto(TipoProjeto *tProjeto, int id){
+    for (int i = 0; i < tProjeto->ultimo; i++){
+        if(id == tProjeto->projeto[i].id){
+            return i;
+        }
+    }
+    return -1;
 }
 
 void ImprimirContraCheque(TipoLista *lista){
@@ -380,7 +406,7 @@ void ImprimirContraCheque(TipoLista *lista){
         cout << "Nome: " << aux->item.nome << endl;
 
         for(int i = 0; i < aux->item.projeto.ultimo; i++){
-            horasTotal += aux->item.projeto.projeto[i]->horasTrabalhadasSemanais;
+            horasTotal += aux->item.projeto.projeto[i].horasTrabalhadasSemanais;
         }
 
         salarioBruto = ((45 * horasTotal) + (35 * aux->item.dependentes));

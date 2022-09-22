@@ -20,7 +20,7 @@ struct Projeto
 
 struct TipoProjeto
 {
-    Projeto* projeto[MAX_TAM];
+    Projeto projeto[MAX_TAM];
     int primeiro = 0;
     int ultimo = 0;
     int tamanho = 0;
@@ -62,21 +62,24 @@ void InsereListaUltimo(TipoLista *lista, TipoFuncionario item);
 void AtualizaUltimo(TipoLista *lista);
 void ImprimeLista(TipoLista lista);
 bool PesquisaItem(TipoLista *lista, char nome[]);
-Apontador PesquisaItemPorId(TipoLista *lista, int id);
+Apontador PesquisaItemPorId(TipoLista lista, int id);
 void ImprimeItem(TipoLista *lista, int id);
 void ImprimeItemPorId(TipoLista *lista, int id);
-void ImprimeProjetoPorId(TipoLista *lista, TipoProjeto projeto, int id);
+void ImprimeProjetoPorId(TipoLista *lista, TipoProjeto *projeto, int id);
 void RemoveListaPrimeiro(TipoLista *lista);
 void RemoveListaUltimo(TipoLista *lista);
 void RemoveItemPorId(TipoLista *lista, int id);
-void RemoveProjectPorId(TipoProjeto *lista, int id);
+void RemoveProjectPorId(TipoProjeto *lista, int p, Projeto *proj, Apontador ap);
 int TamanhoLista(TipoLista *lista);
 int PequisaFuncPorId (TipoLista lista, int id);
 void ImprimeProjectos(TipoProjeto lista);
-int VerificaFunc(int id, TipoLista lista, Apontador *ap);
-void InserirProjetos(Projeto* pro, TipoProjeto *lista);
+int VerificaFunc(int id, TipoLista *lista, Apontador *ap);
+void InserirProjetos(Projeto pro, TipoProjeto *lista);
 void BusqueFunc (TipoLista lista);
-int VerificaProj(int id, TipoProjeto lista, int *a);
+int BusqueProjetos(int id, TipoProjeto projeto, int *a);
+int VerificaProj(int id, TipoProjeto *lista);
 void ImprimirContraCheque(TipoLista *lista);
+void imprimeProjeto(Projeto projeto);
+int pesquisaCodProjeto(TipoProjeto *tProjeto, int id);
 
 #endif
