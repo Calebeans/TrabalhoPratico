@@ -55,7 +55,6 @@ int main()
             cout << "Nome: ";
             item.id = id;
             cin.ignore();
-            TipoLista *tL;
             cin.getline(item.nome, 40);
             cout << "Estado: ";
             // cin.ignore();
@@ -81,32 +80,37 @@ int main()
             cin >> item.dependentes;
 
             CriaListaVaziaSequencial(&item.projeto);
+            InsereListaUltimo(&lista, &item);
 
-            InsereListaUltimo(&lista, item);
+            int opcaoFunc;
+            cout << "Adcionar um projeto para funcionario? \n1-Sim 2-Não" << endl;
+            cin >> opcaoFunc;
+            if (opcaoFunc == 1)
+            {
+                int quantidadeProjeto, cont = 1;
+                cout << "Quantos Projetos desejas adcionar nesse Funcionario? ";
+                cin >> quantidadeProjeto;
+                while (quantidadeProjeto < 0 || quantidadeProjeto > 5)
+                {
+                    cout << "Não pode adcionar essa quantidade de projetos no Funcionario! " << endl;
+                    cout << "Informe novamente a quantidade de projetos: (1 à 5)" << endl;
+                    cin >> quantidadeProjeto;
+                }
+
+                while (cont <= quantidadeProjeto)
+                {
+                    criaProjeto(&tpro, lista, item.id);
+                    cont++;
+                }
+            }
             break;
 
         case 2:
             system("cls");
-            int idFunc, verifica;
+            int idFunc;
             cout << "Funcionario que voce deseja adcionar projeto: ";
             cin >> idFunc;
-            verifica = VerificaFunc(idFunc, &lista, &ap);
-            if (verifica >= 1)
-            {
-                pro.id = codigo;
-                cout << "Nome Projeto: ";
-                cin >> pro.nome;
-                cout << "Horas Projeto: ";
-                cin >> pro.horasTrabalhadasSemanais;
-
-                InserirProjetos(pro, &(ap->prox->item.projeto));
-                system("pause");
-            }
-            else
-            {
-                cout << "Funcionario não existe" << endl;
-                system("pause");
-            }
+            criaProjeto(&tpro, lista, idFunc);
             break;
 
         case 3:
@@ -116,79 +120,51 @@ int main()
             cout << "--------------------------------\n";
             cout << "Funcionario que voce deseja adcionar projeto: ";
             int idFunc1, a;
+            char op;
+            Apontador ap;
             cin >> idFunc1;
             int idProject;
-            if (PesquisaItemPorId(lista, idFunc1))
-            {
+            // if (PesquisaItemPorId(&lista, idFunc1))
+            // {
                 cout << "ID: ";
                 cin >> idProject;
-                // if (BusqueProjetos(idProject, ap->item.projeto, &a))
-                // {
-                    cout << "\n--------------------------------\n";
-                    cout << "Confirma a exclusão do projeto? (s/n): ";
-                    cin >> op;
-                    if (op == 'S' || op == 's')
-                    {
-                        cout << "teste1";
-                        RemoveProjectPorId(&ap->prox->item.projeto, idProject, &pro, ap);
-                        cout << "Projeto excluído com sucesso!" << endl;
-                    }
+                if (BusqueProjetos(idProject, ap->item.projeto, &a) == 1)
+                {
+                cout << "\n--------------------------------\n";
+                cout << "Confirma a exclusão do projeto? (s/n): ";
+                cin >> op;
+                if (op == 'S' || op == 's')
+                {
+                    RemoveProjectPorId(&ap->prox->item.projeto, idProject, &pro, ap);
+                    cout << "Projeto excluído com sucesso!" << endl;
+                }
                 // }
             }
             else
             {
                 cout << "Funcionario não encontrado!\n";
             }
-            cout << "teste3";
-            system("PAUSE");
-            break;
+        // excluiProjetoId(&tpro, lista, pro);
+        cout << "teste3";
+        system("PAUSE");
+        break;
 
-        case 4:
-            system("cls");
-            cout << "-----------------------------------\n";
-            cout << "Exclusão de Funcionario sem projeto\n";
-            cout << "-----------------------------------\n";
-            Apontador f;
-            int codigo;
-            cout << "ID do Funcionario: ";
-            cin >> codigo;
-            f = PesquisaItemPorId(lista, codigo);
-            if (f != NULL)
-            {
-                // cout << &(ap->item.projeto.tamanho);
-                if (f->item.projeto.tamanho == 0)
-                {
-                    ImprimeItemPorId(&lista, codigo);
-                    cout << "\n--------------------------------\n";
-                    cout << "Confirma a exclusão do Funcionario? (s/n): ";
-                    cin >> op;
-                    if (op == 'S' || op == 's')
-                    {
-                        RemoveItemPorId(&lista, codigo);
-                        cout << "Funcionario excluído com sucesso!" << endl;
-                    }
-                }
-                else
-                {
-                    cout << "Funcionario possui projeto!" << endl;
-                }
-            }
-            else
-            {
-                cout << "Funcionario não encontrado! " << endl;
-            }
-            system("PAUSE");
-            break;
+    case 4:
+        system("cls");
+        apagaFuncionario(&lista);
+        system("PAUSE");
+        break;
 
-        case 5:
-            system("cls");
-            BusqueFunc(lista);
-            break;
+    case 5:
+        system("cls");
+        BusqueFunc(lista);
+        break;
 
-        case 6:
-            system("cls");
-            ImprimirContraCheque(&lista);
-            break;
-        }
-    } while (opcao != 0);
+    case 6:
+        system("cls");
+        ImprimirContraCheque(&lista);
+        break;
+    }
+}
+while (opcao != 0);
 }

@@ -9,7 +9,7 @@ typedef struct TipoEndereco
     char bairro[50];
     char rua[50];
     char numero[10];
-} TipoData;
+} TipoEndereco;
 
 struct Projeto
 {
@@ -58,11 +58,11 @@ void CriaListaVazia(TipoLista *lista);
 void CriaListaVaziaSequencial(TipoProjeto *lista);
 bool VerificaListaVazia(TipoLista *lista);
 bool VerificaListaVaziaProjetos(TipoProjeto *lista);
-void InsereListaUltimo(TipoLista *lista, TipoFuncionario item);
+void InsereListaUltimo(TipoLista *lista, TipoFuncionario *item);
 void AtualizaUltimo(TipoLista *lista);
 void ImprimeLista(TipoLista lista);
 bool PesquisaItem(TipoLista *lista, char nome[]);
-Apontador PesquisaItemPorId(TipoLista lista, int id);
+Apontador PesquisaItemPorId(TipoLista *lista, int id);
 void ImprimeItem(TipoLista *lista, int id);
 void ImprimeItemPorId(TipoLista *lista, int id);
 void ImprimeProjetoPorId(TipoLista *lista, TipoProjeto *projeto, int id);
@@ -81,5 +81,9 @@ int VerificaProj(int id, TipoProjeto *lista);
 void ImprimirContraCheque(TipoLista *lista);
 void imprimeProjeto(Projeto projeto);
 int pesquisaCodProjeto(TipoProjeto *tProjeto, int id);
+void criaProjeto(TipoProjeto *tProjeto, TipoLista lista, int idFunc);
+void excluiProjetoId(TipoProjeto *tProjeto, TipoLista lista, Projeto pro);
+int excluiFuncionarioSemProjetos(TipoLista *lista);
+void apagaFuncionario(TipoLista *lista);
 
 #endif
