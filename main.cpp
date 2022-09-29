@@ -31,8 +31,24 @@ int main()
     TipoProjeto tpro;
     Apontador ap;
     Projeto pro;
-    int opcao, ret;
-    char op;
+    int opcao;
+
+    FILE *arquivo;
+    TipoFuncionario func;
+    Apontador a = lista.primeiro;
+
+    arquivo = fopen("funcionarios.bin", "rb");
+
+    if(arquivo != NULL){
+        while (fread(&func, sizeof(TipoFuncionario), 1, arquivo))
+        {
+            InsereListaUltimo(&lista, func);
+        }
+        fclose(arquivo);
+    }else{
+        cout << "Vazio!";
+        system("pause");
+    }
 
     CriaListaVazia(&lista);
 
@@ -57,30 +73,25 @@ int main()
             cin.ignore();
             cin.getline(item.nome, 40);
             cout << "Estado: ";
-            // cin.ignore();
-            // cin.getline(item.endereco.estado, 30);
-            strcpy(item.endereco.estado, "Minas Gerais");
+            cin.ignore();
+            cin.getline(item.endereco.estado, 30);
             cout << "Cidade: ";
-            // cin.ignore();
-            // cin.getline(item.endereco.cidade, 50);
-            strcpy(item.endereco.cidade, "SJE");
+            cin.ignore();
+            cin.getline(item.endereco.cidade, 50);
             cout << "Bairro: ";
-            // cin.ignore();
-            // cin.getline(item.endereco.bairro, 50);
-            strcpy(item.endereco.bairro, "Novo Sucesso");
+            cin.ignore();
+            cin.getline(item.endereco.bairro, 50);
             cout << "Rua: ";
-            // cin.ignore();
-            // cin.getline(item.endereco.rua, 50);
-            strcpy(item.endereco.rua, "Maria Aurelia");
+            cin.ignore();
+            cin.getline(item.endereco.rua, 50);
             cout << "Numero: ";
-            // cin.ignore();
-            // cin.getline(item.endereco.numero, 10);
-            strcpy(item.endereco.numero, "139");
+            cin.ignore();
+            cin.getline(item.endereco.numero, 10);
             cout << "Dependentes: ";
             cin >> item.dependentes;
 
             CriaListaVaziaSequencial(&item.projeto);
-            InsereListaUltimo(&lista, &item);
+            InsereListaUltimo(&lista, item);
 
             int opcaoFunc;
             cout << "Adcionar um projeto para funcionario? \n1-Sim 2-Não" << endl;
@@ -99,7 +110,7 @@ int main()
 
                 while (cont <= quantidadeProjeto)
                 {
-                    criaProjeto(&tpro, lista, item.id);
+                    criaProjeto(&lista);
                     cont++;
                 }
             }
@@ -108,63 +119,45 @@ int main()
         case 2:
             system("cls");
             int idFunc;
-            cout << "Funcionario que voce deseja adcionar projeto: ";
-            cin >> idFunc;
-            criaProjeto(&tpro, lista, idFunc);
+            criaProjeto(&lista);
             break;
 
         case 3:
             system("cls");
-            cout << "--------------------------------\n";
-            cout << "       Exlusão de Projetos      \n";
-            cout << "--------------------------------\n";
-            cout << "Funcionario que voce deseja adcionar projeto: ";
-            int idFunc1, a;
-            char op;
-            Apontador ap;
-            cin >> idFunc1;
-            int idProject;
-            // if (PesquisaItemPorId(&lista, idFunc1))
-            // {
-                cout << "ID: ";
-                cin >> idProject;
-                if (BusqueProjetos(idProject, ap->item.projeto, &a) == 1)
-                {
-                cout << "\n--------------------------------\n";
-                cout << "Confirma a exclusão do projeto? (s/n): ";
-                cin >> op;
-                if (op == 'S' || op == 's')
-                {
-                    RemoveProjectPorId(&ap->prox->item.projeto, idProject, &pro, ap);
-                    cout << "Projeto excluído com sucesso!" << endl;
-                }
-                // }
-            }
-            else
-            {
-                cout << "Funcionario não encontrado!\n";
-            }
-        // excluiProjetoId(&tpro, lista, pro);
-        cout << "teste3";
-        system("PAUSE");
-        break;
+            excluiProjetoId(&lista);
+            system("PAUSE");
+            break;
 
-    case 4:
-        system("cls");
-        apagaFuncionario(&lista);
-        system("PAUSE");
-        break;
+        case 4:
+            system("cls");
+            apagaFuncionario(&lista);
+            system("PAUSE");
+            break;
 
-    case 5:
-        system("cls");
-        BusqueFunc(lista);
-        break;
+        case 5:
+            system("cls");
+            BusqueFunc(lista);
+            break;
 
-    case 6:
-        system("cls");
-        ImprimirContraCheque(&lista);
-        break;
+        case 6:
+            system("cls");
+            ImprimirContraCheque(&lista);
+            break;
+        }
+    }while (opcao != 0);
+
+    arquivo = fopen("funcionarios.bin", "wb");
+
+    while (a->prox != NULL)
+    {
+        func = a->prox->item;
+        fwrite(&func, sizeof(TipoFuncionario), 1, arquivo);
+        a = a->prox;
     }
-}
-while (opcao != 0);
+
+    fclose(arquivo);
+    desalocaLista(&lista);
+    
+    system("pause");
+    return 0;
 }
