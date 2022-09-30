@@ -47,7 +47,6 @@ int main()
         fclose(arquivo);
     }else{
         cout << "Vazio!";
-        system("pause");
     }
 
     CriaListaVazia(&lista);
@@ -72,21 +71,26 @@ int main()
             item.id = id;
             cin.ignore();
             cin.getline(item.nome, 40);
-            cout << "Estado: ";
-            cin.ignore();
-            cin.getline(item.endereco.estado, 30);
+             cout << "Estado: ";
+            // cin.ignore();
+            // cin.getline(item.endereco.estado, 30);
+            strcpy(item.endereco.estado, "Minas Gerais");
             cout << "Cidade: ";
-            cin.ignore();
-            cin.getline(item.endereco.cidade, 50);
+            // cin.ignore();
+            // cin.getline(item.endereco.cidade, 50);
+            strcpy(item.endereco.cidade, "SJE");
             cout << "Bairro: ";
-            cin.ignore();
-            cin.getline(item.endereco.bairro, 50);
+            // cin.ignore();
+            // cin.getline(item.endereco.bairro, 50);
+            strcpy(item.endereco.bairro, "Novo Sucesso");
             cout << "Rua: ";
-            cin.ignore();
-            cin.getline(item.endereco.rua, 50);
+            // cin.ignore();
+            // cin.getline(item.endereco.rua, 50);
+            strcpy(item.endereco.rua, "Maria Aurelia");
             cout << "Numero: ";
-            cin.ignore();
-            cin.getline(item.endereco.numero, 10);
+            // cin.ignore();
+            // cin.getline(item.endereco.numero, 10);
+            strcpy(item.endereco.numero, "139");
             cout << "Dependentes: ";
             cin >> item.dependentes;
 
